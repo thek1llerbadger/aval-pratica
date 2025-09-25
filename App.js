@@ -59,7 +59,7 @@ export default function App() {
         recipe.id === editingRecipeId ? newRecipe : recipe
       )
     : [...recipes, newRecipe];
-
+//teste
   setRecipes(updatedRecipes);
   saveRecipes(updatedRecipes);
   setTitle('');
@@ -71,7 +71,7 @@ export default function App() {
 
 const handleDeleteRecipe = (id) => {
     const userConfirmed = window.confirm('Deseja deletar essa receita?');
-    
+
     if (userConfirmed) {
       const updatedRecipes = recipes.filter((recipe) => recipe.id !== id);
       setRecipes(updatedRecipes);
