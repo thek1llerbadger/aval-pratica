@@ -15,6 +15,8 @@ export default function App() {
   const [recipes, setRecipes] = useState([]);
   const [title, setTitle] = useState('');
   const [ingredients, setIngredients] = useState('');
+  const [preparation, setPreparation] = useState('');
+  const [editingRecipeId, setEditingRecipeId] = useState(null);
 
   // Função para carregar receitas do localStorage
   useEffect(() => {
@@ -41,7 +43,7 @@ export default function App() {
   };
 
   const handleAddRecipe = () => {
-    if (!title) {
+    if (!title || !ingredients || !preparation) {
       return;
     }
 
@@ -49,20 +51,43 @@ export default function App() {
       id: Date.now().toString(),
       title: title,
       ingredients: ingredients,
+      preparation: preparation,
     };
 
-    const updatedRecipes = [...recipes, newRecipe];
-    setRecipes(updatedRecipes);
-    saveRecipes(updatedRecipes); // Salva no localStorage
-    setTitle('');
-    setIngredients('');
-    setView('lista');
-  };
+    const updatedRecipes = editingRecipeId
+    ? recipes.map((recipe) =>
+        recipe.id === editingRecipeId ? newRecipe : recipe
+      )
+    : [...recipes, newRecipe];
+//teste
+  setRecipes(updatedRecipes);
+  saveRecipes(updatedRecipes);
+  setTitle('');
+  setIngredients('');
+  setPreparation('');
+  setEditingRecipeId(null); // Limpa o estado de edição
+  setView('lista');
+};
 
-  const handleDeleteRecipe = (id) => {
-    const updatedRecipes = recipes.filter((recipe) => recipe.id !== id);
-    setRecipes(updatedRecipes);
-    saveRecipes(updatedRecipes); // Atualiza o localStorage
+const handleDeleteRecipe = (id) => {
+    const userConfirmed = window.confirm('Deseja deletar essa receita?');
+
+    if (userConfirmed) {
+      const updatedRecipes = recipes.filter((recipe) => recipe.id !== id);
+      setRecipes(updatedRecipes);
+      saveRecipes(updatedRecipes);
+    }
+};
+
+  const handleChangeRecipe = (id) => {
+    const recipeToEdit = recipes.find((recipe) => recipe.id === id);
+    if (recipeToEdit) {
+      setTitle(recipeToEdit.title);
+      setIngredients(recipeToEdit.ingredients);
+      setPreparation(recipeToEdit.preparation);
+      setEditingRecipeId(id); // Armazena o ID da receita sendo editada
+      setView('formulario');
+    }
   };
 
   return (
@@ -81,13 +106,22 @@ export default function App() {
                 <View key={item.id} style={styles.recipeItem}>
                   <View style={styles.recipeTextContainer}>
                     <Text style={styles.recipeTitle}>{item.title}</Text>
+                    <Text style={styles.recipeIntTitle}>Ingredientes</Text>
                     <Text style={styles.recipeIngredients}>{item.ingredients}</Text>
+                    <Text style={styles.recipeIntTitle}>Modo de preparo</Text>
+                    <Text style={styles.recipeIngredients}>{item.preparation}</Text>
                   </View>
                   <TouchableOpacity
                     style={styles.deleteButton}
                     onPress={() => handleDeleteRecipe(item.id)}
                   >
                     <Text style={styles.buttonText}>Excluir</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.changeButton}
+                    onPress={() => handleChangeRecipe(item.id)}
+                  >
+                    <Text style={styles.buttonText}>Alterar</Text>
                   </TouchableOpacity>
                 </View>
               ))
@@ -107,6 +141,13 @@ export default function App() {
               placeholder="Ingredientes"
               value={ingredients}
               onChangeText={setIngredients}
+              multiline={true}
+            />
+            <TextInput
+              style={[styles.input, styles.textArea]}
+              placeholder="Modo de preparo"
+              value={preparation}
+              onChangeText={setPreparation}
               multiline={true}
             />
             <View style={styles.formActions}>
@@ -213,11 +254,23 @@ const styles = StyleSheet.create({
     color: '#7f8c8d',
     marginTop: 5,
   },
+  recipeIntTitle: {
+    fontSize: 16,
+    fontWeight: 'semi-bold',
+    marginTop: 10,
+  },
   deleteButton: {
     backgroundColor: '#e74c3c',
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 5,
+  },
+  changeButton: {
+    backgroundColor: '#2a7ee2',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 5,
+    marginLeft: 5,
   },
   buttonText: {
     color: 'white',
