@@ -11,6 +11,7 @@ import {
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export default function App() {
+  const [currentScreen, setCurrentScreen] = useState('home');
   const [view, setView] = useState('lista');
   const [recipes, setRecipes] = useState([]);
   const [title, setTitle] = useState('');
@@ -92,81 +93,81 @@ const handleDeleteRecipe = (id) => {
 
   return (
     <SafeAreaProvider style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Text style={styles.header}>Meu Livro de Receitas</Text>
-        {view === 'lista' ? (
-          <View>
-            <TouchableOpacity style={styles.addButton} onPress={() => setView('formulario')}>
-              <Text style={styles.buttonText}>Adicionar Nova Receita</Text>
-            </TouchableOpacity>
-            {recipes.length === 0 ? (
-              <Text style={styles.emptyText}>Nenhuma receita cadastrada.</Text>
-            ) : (
-              recipes.map((item) => (
-                <View key={item.id} style={styles.recipeItem}>
-                  <View style={styles.recipeTextContainer}>
-                    <Text style={styles.recipeTitle}>{item.title}</Text>
-                    <Text style={styles.recipeIntTitle}>Ingredientes</Text>
-                    <Text style={styles.recipeIngredients}>{item.ingredients}</Text>
-                    <Text style={styles.recipeIntTitle}>Modo de preparo</Text>
-                    <Text style={styles.recipeIngredients}>{item.preparation}</Text>
+      {currentScreen === 'home' ? (
+        <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+          <Text style={styles.header}>Bem-vindo ao Meu Livro de Receitas</Text>
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={() => setCurrentScreen('app')}
+          >
+            <Text style={styles.buttonText}>Entrar</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <Text style={styles.header}>Meu Livro de Receitas</Text>
+          {view === 'lista' ? (
+            <View>
+              <TouchableOpacity style={styles.addButton} onPress={() => setView('formulario')}>
+                <Text style={styles.buttonText}>Adicionar Nova Receita</Text>
+              </TouchableOpacity>
+              {recipes.length === 0 ? (
+                <Text style={styles.emptyText}>Nenhuma receita cadastrada.</Text>
+              ) : (
+                recipes.map((item) => (
+                  <View key={item.id} style={styles.recipeItem}>
+                    <View style={styles.recipeTextContainer}>
+                      <Text style={styles.recipeTitle}>{item.title}</Text>
+                      <Text style={styles.recipeIntTitle}>Ingredientes</Text>
+                      <Text style={styles.recipeIngredients}>{item.ingredients}</Text>
+                      <Text style={styles.recipeIntTitle}>Modo de preparo</Text>
+                      <Text style={styles.recipeIngredients}>{item.preparation}</Text>
+                    </View>
                   </View>
-                  <TouchableOpacity
-                    style={styles.deleteButton}
-                    onPress={() => handleDeleteRecipe(item.id)}
-                  >
-                    <Text style={styles.buttonText}>Excluir</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.changeButton}
-                    onPress={() => handleChangeRecipe(item.id)}
-                  >
-                    <Text style={styles.buttonText}>Alterar</Text>
-                  </TouchableOpacity>
-                </View>
-              ))
-            )}
-          </View>
-        ) : (
-          <View style={styles.formContainer}>
-            <Text style={styles.formHeader}>Adicionar Receita</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Título da Receita"
-              value={title}
-              onChangeText={setTitle}
-            />
-            <TextInput
-              style={[styles.input, styles.textArea]}
-              placeholder="Ingredientes"
-              value={ingredients}
-              onChangeText={setIngredients}
-              multiline={true}
-            />
-            <TextInput
-              style={[styles.input, styles.textArea]}
-              placeholder="Modo de preparo"
-              value={preparation}
-              onChangeText={setPreparation}
-              multiline={true}
-            />
-            <View style={styles.formActions}>
-              <TouchableOpacity
-                style={[styles.formButton, styles.cancelButton]}
-                onPress={() => setView('lista')}
-              >
-                <Text style={styles.buttonText}>Cancelar</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.formButton, styles.saveButton]}
-                onPress={handleAddRecipe}
-              >
-                <Text style={styles.buttonText}>Salvar</Text>
-              </TouchableOpacity>
+                ))
+              )}
             </View>
-          </View>
-        )}
-      </ScrollView>
+          ) : (
+            <View style={styles.formContainer}>
+              <Text style={styles.formHeader}>Adicionar Receita</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Título da Receita"
+                value={title}
+                onChangeText={setTitle}
+              />
+              <TextInput
+                style={[styles.input, styles.textArea]}
+                placeholder="Ingredientes"
+                value={ingredients}
+                onChangeText={setIngredients}
+                multiline={true}
+              />
+              <TextInput
+                style={[styles.input, styles.textArea]}
+                placeholder="Modo de preparo"
+                value={preparation}
+                onChangeText={setPreparation}
+                multiline={true}
+              />
+              <View style={styles.formActions}>
+                <TouchableOpacity
+                  style={[styles.formButton, styles.cancelButton]}
+                  onPress={() => setView('lista')}
+                >
+                  <Text style={styles.buttonText}>Cancelar</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.formButton, styles.saveButton]}
+                  onPress={handleAddRecipe}
+                >
+                  <Text style={styles.buttonText}>Salvar</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+        </ScrollView>
+      )}
     </SafeAreaProvider>
   );
 }
@@ -184,7 +185,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginVertical: 20,
-    color: '#e67e22',
+    color: '#264ea3',
   },
   formContainer: {
     backgroundColor: '#fff',
