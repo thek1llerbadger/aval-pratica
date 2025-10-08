@@ -123,6 +123,18 @@ const handleDeleteRecipe = (id) => {
                       <Text style={styles.recipeIntTitle}>Modo de preparo</Text>
                       <Text style={styles.recipeIngredients}>{item.preparation}</Text>
                     </View>
+                    <TouchableOpacity
+                    style={styles.deleteButton}
+                    onPress={() => handleDeleteRecipe(item.id)}
+                  >
+                    <Text style={styles.buttonText}>Excluir</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.changeButton}
+                    onPress={() => handleChangeRecipe(item.id)}
+                  >
+                    <Text style={styles.buttonText}>Alterar</Text>
+                  </TouchableOpacity>
                   </View>
                 ))
               )}
